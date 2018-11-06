@@ -62,7 +62,7 @@ public class Core {
          */
         Caster telegram = new Caster(api_key);
         HTTPResponse rep = telegram.getDetails();
-        NBotlogger.log();
+        NBotlogger.log("CORE", "Initialising Telegram");
         System.out.println(rep.responseCode);
         System.out.println(rep.protocol);
         System.out.println(rep.content);
@@ -71,5 +71,8 @@ public class Core {
         } else {
             NBotlogger.log("CORE", "Telegram API returned: " + rep.responseCode);
         }
+
+        Caller api = new Caller(url_root, threshold);
+        System.out.println(api.callSearchAPI("replaceme"));
     }
 }

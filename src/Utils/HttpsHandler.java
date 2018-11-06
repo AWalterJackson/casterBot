@@ -11,7 +11,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 public final class HttpsHandler {
-	private static final String USER_AGENT = "Mozilla/5.0";
+	private static final String USER_AGENT = "CasterBot/0.1 (By Nantangitan on e621)";
 	private static final boolean debug = false;
 
 	public static HTTPResponse httpget(String url) {

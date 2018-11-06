@@ -16,8 +16,6 @@ public class Caster {
         return HttpsHandler.httpsget(api_root + api_key + "/getMe");
     }
 
-    public HTTPResponse broadcast() {
-        
-    }
+    //public HTTPResponse broadcast() { }
 
 }
