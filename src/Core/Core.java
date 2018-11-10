@@ -1,12 +1,15 @@
 package Core;
 
+import Utils.E621Post;
 import Utils.HTTPResponse;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import Utils.NBotlogger;
 
@@ -63,16 +66,44 @@ public class Core {
         Caster telegram = new Caster(api_key);
         HTTPResponse rep = telegram.getDetails();
         NBotlogger.log("CORE", "Initialising Telegram");
-        System.out.println(rep.responseCode);
-        System.out.println(rep.protocol);
-        System.out.println(rep.content);
         if(rep.responseCode == 200) {
             NBotlogger.log("CORE", "Telegram API ready");
         } else {
             NBotlogger.log("CORE", "Telegram API returned: " + rep.responseCode);
         }
 
+        /**
+         * Init data here, attempt to read the stored file, and do a full sweep if it doesn't exist.
+         */
         Caller api = new Caller(url_root, threshold);
-        System.out.println(api.callSearchAPI("replaceme"));
+        ArrayList<E621Post> callData = new ArrayList<E621Post>();
+        int currentPage = 1;
+
+        JSONArray dataIn = api.callSearchAPI(search_string, 320, currentPage, 2000000);
+        while(dataIn.length() > 0) {
+            for(int i = 0; i < dataIn.length(); i++) {
+                JSONObject currentPost = dataIn.getJSONObject(i);
+                E621Post post = new E621Post();
+                post.id = currentPost.getInt("id");
+                post.file_size = currentPost.getInt("file_size");
+                post.setArtists(currentPost.getJSONArray("artist"));
+                try {
+                    post.source = currentPost.getString("source");
+                } catch(Exception e) {
+                    post.source = "";
+                }
+                post.extension = currentPost.getString("file_ext");
+                post.sample_url = currentPost.getString("sample_url");
+                post.file_url = currentPost.getString("file_url");
+                post.score = currentPost.getInt("score");
+                post.favs = currentPost.getInt("fav_count");
+                callData.add(post);
+            }
+            currentPage++;
+            System.out.println(currentPage);
+            dataIn = api.callSearchAPI(search_string, 320, currentPage, callData.get(callData.size()-1).id);
+        }
+        NBotlogger.log("CORE", "Called " + currentPage + " pages.");
+
     }
 }

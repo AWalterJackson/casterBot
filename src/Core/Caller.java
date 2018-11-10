@@ -13,7 +13,7 @@ public class Caller {
         this.threshold = threshold;
     }
 
-    public JSONArray callSearchAPI(String searchData){
-        return new JSONArray(HttpsHandler.httpsget(this.url_root + "post/index.json?limit=5").content);
+    public JSONArray callSearchAPI(String searchData, int limit, int page, int maxid){
+        return new JSONArray(HttpsHandler.httpsget(this.url_root + "post/index.json?limit=" + limit + "&page=" + page + "&beforeid=" + maxid + "&tags=" + searchData).content);
     }
 }
